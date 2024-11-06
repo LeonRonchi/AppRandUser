@@ -23,15 +23,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mapView;
     private GoogleMap googleMap;
-    private TextView distanciaKm;
+    private TextView distanciaKm, latLong;
     private static final String MAP_VIEW_BUNDLE_KEY = "MAP_VIEW_BUNDLE_KEY";
 
     public MapViewFragment() {
         // Required empty public constructor
-    }
-
-    public static MapViewFragment newInstance() {
-        return new MapViewFragment();
     }
 
     @Override
@@ -41,6 +37,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         mapView = view.findViewById(R.id.mapView);
         distanciaKm = view.findViewById(R.id.distanciaKm);
+        latLong = view.findViewById(R.id.tvLatLong);
         distanciaKm.setText("0.0 KM");
 
         Bundle mapViewBundle = null;
@@ -96,8 +93,38 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 MainActivity.latitudeUser, MainActivity.longitudeUser
         );
         distanciaKm.setText(String.format("%.2f KM", distanceKm));
-
+        latLong.setText("Latitude: "+MainActivity.latitudeUser + " - Longitude: " +MainActivity.longitudeUser);
         googleMap.addMarker(new MarkerOptions().position(userLatLng));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 12.0f));
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+    @Override
+    public void onDestroy() {
+        mapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
 }

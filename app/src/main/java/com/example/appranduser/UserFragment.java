@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,10 +17,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.example.appranduser.Entities.Api.User;
-import com.example.appranduser.Entities.Api.Users;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,22 +26,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserFragment extends Fragment {
-
     private TextView tvNome, tvEmail;
     private ImageView ivFoto;
     private Spinner multiSelectSpinner, genderSpinner;
     private Button btPesquisar;
     private ArrayList<String> selectedCountries = new ArrayList<>();
     private Bitmap bmp;
+    private Result res;
 
     private static final String[] COUNTRIES = {"AU", "BR", "CA", "CH", "DE", "DK", "ES", "FI", "FR", "GB", "IE", "IN", "IR", "MX", "NL", "NO", "NZ", "RS", "TR", "UA", "US"};
     private static final String[] GENDERS = {"Selecione um Gênero", "Masculino", "Feminino"};
 
     public UserFragment() {}
-
-    public static UserFragment newInstance() {
-        return new UserFragment();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,14 +54,14 @@ public class UserFragment extends Fragment {
         btPesquisar.setOnClickListener(v -> {
             String selectedGender = genderSpinner.getSelectedItem().toString();
             String genero = selectedGender.equals("Feminino") ? "female" : selectedGender.equals("Masculino") ? "male" : "";
-            consultarUsuarioAleatorio(genero, selectedCountries);
+            consultarUsuarioAleatorio(genero, selectedCountries,1);
         });
 
         carregaMultiSelect();
         carregaGender();
 
         if (MainActivity.user == null) {
-            consultarUsuarioAleatorio("", new ArrayList<>());
+            consultarUsuarioAleatorio("", new ArrayList<>(),0);
         } else {
             definirDadosUsuarioAleatorio(MainActivity.user);
         }
@@ -75,9 +69,10 @@ public class UserFragment extends Fragment {
         return view;
     }
 
-    private void definirDadosUsuarioAleatorio(User user) {
+    private void definirDadosUsuarioAleatorio(Result user) {
+        res = user;
         tvNome.setText(user.name.getNomeCompleto());
-        tvEmail.setText(user.getEmail());
+        tvEmail.setText(user.email);
         carregarImagem(user.picture.large);
         MainActivity.latitudeUser = Double.parseDouble(user.location.coordinates.latitude);
         MainActivity.longitudeUser = Double.parseDouble(user.location.coordinates.longitude);
@@ -94,21 +89,25 @@ public class UserFragment extends Fragment {
         }).start();
     }
 
-    private void consultarUsuarioAleatorio(String genero, ArrayList<String> listaNacionalidades) {
+    private void consultarUsuarioAleatorio(String genero, ArrayList<String> listaNacionalidades, int flag) {
         String nacionalidades = String.join(",", listaNacionalidades);
-        Call<Users> call = new RetrofitConfig().getUserService().getRandomUser(genero, nacionalidades);
-        call.enqueue(new Callback<Users>() {
+        Call<User> call = new RetrofitConfig().getUserService().getUser(genero, nacionalidades);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Users> call, Response<Users> response) {
-                if (response.body() != null) {
-                    MainActivity.user = response.body().results.get(0);
-                    definirDadosUsuarioAleatorio(MainActivity.user);
+            public void onResponse(Call<User> call, Response<User> response) {
+                Result user = response.body().results.get(0);
+                Log.i("user", user.name.first);
+
+                if (MainActivity.user == null || flag ==1) {
+                    MainActivity.user = user;
                 }
+
+                definirDadosUsuarioAleatorio(user);
             }
 
             @Override
-            public void onFailure(Call<Users> call, Throwable t) {
-                tvNome.setText("Erro: " + t.getMessage());
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("erro", t.getMessage());
             }
         });
     }

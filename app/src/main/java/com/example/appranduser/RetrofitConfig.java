@@ -1,6 +1,5 @@
 package com.example.appranduser;
 
-import com.example.appranduser.Entities.UserService;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

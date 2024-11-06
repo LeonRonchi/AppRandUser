@@ -16,7 +16,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="59dp"
             android:orientation="vertical">
 
             <TextView
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="Distância"
+                android:text="Distância entre você e a pessoa (em linha reta):"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -37,6 +37,12 @@
                 android:gravity="center"
                 android:text="0.0 KM"
                 android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvLatLong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" />
         </LinearLayout>
 
         <com.google.android.gms.maps.MapView

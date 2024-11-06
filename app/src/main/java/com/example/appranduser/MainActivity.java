@@ -7,10 +7,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,11 +21,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.appranduser.Entities.Api.User;
-import com.example.appranduser.Entities.PermissionsMarshmallow;
-
-import java.util.ArrayList;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private ImageButton btUserFragment, btMapViewFragment;
@@ -36,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private static MapViewFragment mapViewFragment = new MapViewFragment();
     private LocationManager locationManager;
     private LocationListener locationListener;
-
 
     private PermissionsMarshmallow permissionsMashmallow = new PermissionsMarshmallow(this);
 
@@ -51,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             latitudeUser = 0, longitudeUser = 0,
             latitudeDevice = 0, longitudeDevice = 0;
 
-    public static User user = null;
+    public static Result user = null;
     public static boolean[] selectedContriesPosition;
 
     @Override
@@ -72,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         btUserFragment.setOnClickListener(e -> {
             trocarFragment(userFragment);
+            //btUserFragment.setBackgroundColor(808080);
         });
 
         btMapViewFragment.setOnClickListener(e -> {

@@ -28,7 +28,7 @@
         <ImageButton
             android:id="@+id/btUserFragment"
             android:layout_width="wrap_content"
-            android:layout_height="81dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0.6"
             android:backgroundTint="#FFFFFF"
             app:srcCompat="@drawable/icons8_decis_o_50" />
